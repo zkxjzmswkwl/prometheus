@@ -28,7 +28,7 @@ The patcher itself just goes to TlsCallback_0 and patches some bytes so the exec
 
 # 2. Usage
 
-* If you havent already, download the 0.8 beta from [archive.org](https://archive.org/details/overwatch-beta-0-8-0-24919) and extract the files somewhere.
+* If you havent already, download the 0.8 beta from *snip*, there's a site known for archiving things. Check there.
   * ⚠️ Make sure that you don't download any malicious executable and verify that the GameClientApp.exe is signed by Blizzard. The signature will get broken after applying the patcher.
 * Compile the patcher and prometheus projects.
   * You need Visual Studio 2022. I have not tested it on any other platform
