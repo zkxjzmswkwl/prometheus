@@ -1,13 +1,11 @@
-﻿using System.Windows.Forms;
-
-namespace patcher
+﻿namespace patcher
 {
     public static class Program
     {
         [STAThread]
         public static void Main(string[] args)
         {
-            Console.WriteLine("Plwase open the unpatched GameClientApp.exe");
+            Console.WriteLine("Please open the unpatched GameClientApp.exe");
 
             //Since i dont have the original patch anymore
             //this is just a diff lol

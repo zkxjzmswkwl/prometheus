@@ -322,6 +322,7 @@
     <ClInclude Include="windows\herolineup_creator.h">
       <Filter>windows</Filter>
     </ClInclude>
+    <ClInclude Include="patches.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -391,6 +392,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="state_replicator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="patches.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
