@@ -26,7 +26,7 @@ Hey and welcome, thanks for stopping by!
 
 # 1. Usage
 
-If you havent already, download the 0.8 beta from [archive.org](https://archive.org/details/overwatch-beta-0-8-0-24919) and extract the files somewhere.
+If you havent already, download the 0.8 beta from *a website that archives files* and extract the files somewhere.
 * ⚠️ Make sure that you don't download any malicious executable and verify that GameClientApp.exe is signed by Blizzard. The signature will get broken after applying the patcher.
 * You can safely remove the BlizzardError directory.
 
