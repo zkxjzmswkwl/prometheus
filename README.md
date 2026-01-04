@@ -1,9 +1,12 @@
 # Prometheus <!-- omit in toc -->
 
 Hey and welcome, thanks for stopping by!
-- [1. Patcher \& how it works](#1-patcher--how-it-works)
-- [2. Usage](#2-usage)
-- [3. Game internals](#3-game-internals)
+- [1. Usage](#1-usage)
+  - [Download a Release](#download-a-release)
+    - [Optional stuff](#optional-stuff)
+    - [Patcher \& how it works](#patcher--how-it-works)
+  - [Compilation](#compilation)
+- [2. Game internals](#2-game-internals)
   - [Managers](#managers)
   - [ECS](#ecs)
   - [STU](#stu)
@@ -14,38 +17,45 @@ Hey and welcome, thanks for stopping by!
     - [STUStatescriptComponent 0x23](#stustatescriptcomponent-0x23)
     - [Component 1](#component-1)
     - [MovementStateSystem](#movementstatesystem)
-- [4. Broken stuff and why it's broken](#4-broken-stuff-and-why-its-broken)
-- [5. Tips \& Tricks](#5-tips--tricks)
-- [6. Contributions Welcome!](#6-contributions-welcome)
-- [7. NOTE](#7-note)
-- [8. Open Source libraries used](#8-open-source-libraries-used)
-- [9. License and Contact](#9-license-and-contact)
+- [3. Broken stuff and why it's broken](#3-broken-stuff-and-why-its-broken)
+- [4. Tips \& Tricks](#4-tips--tricks)
+- [5. Contributions Welcome!](#5-contributions-welcome)
+- [6. NOTE](#6-note)
+- [7. Open Source libraries used](#7-open-source-libraries-used)
+- [8. License and Contact](#8-license-and-contact)
 
+# 1. Usage
 
-# 1. Patcher & how it works
+If you havent already, download the 0.8 beta from [archive.org](https://archive.org/details/overwatch-beta-0-8-0-24919) and extract the files somewhere.
+* ⚠️ Make sure that you don't download any malicious executable and verify that GameClientApp.exe is signed by Blizzard. The signature will get broken after applying the patcher.
+* You can safely remove the BlizzardError directory.
 
-The patcher itself just goes to TlsCallback_0 and patches some bytes so the executable loads inject.dll before anything else. inject.dll then restores the game to its original state, decrypts everything and hooks stuff. Afterwards it runs the game normally. This was achieved with just copying the bytes which lazy_importer created for the LoadLibrary function and then calling LoadLibrary with "inject.dll" as an argument.
+## Download a Release
 
-# 2. Usage
-
-* If you havent already, download the 0.8 beta from *snip*, there's a site known for archiving things. Check there.
-  * ⚠️ Make sure that you don't download any malicious executable and verify that the GameClientApp.exe is signed by Blizzard. The signature will get broken after applying the patcher.
-* Compile the patcher and prometheus projects.
-  * You need Visual Studio 2022. I have not tested it on any other platform
-  * Make sure to initialize the submodules / clone recursively
-  * Initialize the vcpkg repository with the ps1 file located at external/vcpkg/scripts/bootstrap.ps1
-  * Compile as Relaese/x64. No other configuration is tested  (some flags and settings are missing).
-* After compiling, execute the patcher executable. It will ask for an input GameClientApp.exe, select the one you have downloaded and verified.
+* Download a release.zip. Extract all files to the game directory.
+* Rename prometheus.dll into inject.dll
+* Execute patcher.exe. It will ask for an input GameClientApp.exe, select the one you have downloaded and verified.
   * The patcher will write a GameClientApp.patched.exe file into the same directory. The only thing this patched executable does is load inject.dll before running the game code itself.
-* Move prometheus.dll and copy it and all dependencies into the directory where the game is located. Rename prometheus.dll into inject.dll.
 * Congratulations, you're done :) Have a cookie 🍪
 
-Optional stuff:
+### Optional stuff
+
 * Download the [MonaspaceXenon](https://monaspace.githubnext.com/) font and put the -regular.otf and -bold.otf in the directory of the game files.
 * Download the [Font Awesome v6](https://fontawesome.com/v6/download) free desktop font files and put the .otf files into the game directory.
 * Once first started, the library will create hashlibrary.json. You can add crc32 strings / elements to hash which will be displayed in various places where applicable. You can just add all the strings from the [overtools github repository](https://github.com/overtools/OWLib/tree/develop/TankLibHelper/DataPreHashChange). To do so add another root JSON element (an array) called "add" and put all your strings there.
 
-# 3. Game internals
+### Patcher & how it works
+
+The patcher itself just goes to TlsCallback_0 and patches some bytes so the executable loads inject.dll before anything else. inject.dll then restores the game to its original state, decrypts everything and hooks stuff. Afterwards it runs the game normally. This was achieved with just copying the bytes which lazy_importer created for the LoadLibrary function and then calling LoadLibrary with "inject.dll" as an argument.
+
+## Compilation
+
+* You need Visual Studio 2022. I have not tested it on any other platform
+* Make sure to initialize the submodules / clone recursively
+* Initialize the vcpkg repository with the ps1 file located at external/vcpkg/scripts/bootstrap.ps1
+* Compile as Relaese/x64. No other configuration is tested  (some flags and settings are missing).
+
+# 2. Game internals
 
 ## Managers
 The first think Overwatch does is initialize all its "Managers". They handle things such as Dataflow, CASC, Window management, etc. This is the lowest level and not really interesting.
@@ -119,7 +129,7 @@ For the local player, there are some flags which you NEED to set in order for yo
 
 The most important thing is the list of MovementState in component 12. It holds all the deltas sent down from the server and does interpolation and stuff to hide network interference for you.
 
-# 4. Broken stuff and why it's broken
+# 3. Broken stuff and why it's broken
 
 * "Press H to select Hero" will always be displayed once spawning a hero: This is controlled by the server by setting a boolean flag in component 
 * Weapons don't shoot: I have no idea, did not look into that yet. Probably a system which needs to be explored first or a statescript var that needs to be set.
@@ -140,7 +150,7 @@ The most important thing is the list of MovementState in component 12. It holds 
 * Resizing the window screws with the game's viewmodels: Bug in the beta. Just set borderless windowed, thats the best mode for now.
 * Client sometimes crashes before opening the main window: Needs fixing but happens so rarely that I wont bother rn.
 
-# 5. Tips & Tricks
+# 4. Tips & Tricks
 
 Use the up / down arrow keys to teleport yourself up/down. Use the left/right arrow keys to change the physics timescale. 
 
@@ -154,16 +164,16 @@ You can mess around with Statescript! Go to ECS->Entity list, select a Statescri
 
 You can open the map I have shown in the demo with key M. Fun fact: The "world ping" system in Overwatch 2 exists in the beta as well! I have found an entity which gets spawned on ping, though enabling that is still a TODO. 
 
-# 6. Contributions Welcome!
+# 5. Contributions Welcome!
 I envision a future in which we are able to play any Overwatch version that was released. With help from the community, this isn't just a dream, but a real possibility. Please help by forking, contributing, opening bug reports and sharing <3. Remember, great science is always the result of collaboration!
 
-# 7. NOTE
+# 6. NOTE
 
 Since this was hastily refactored and some types were pasted into this project which i havent checked for errors yet, some stuff may be broken which I havent noticed yet. This will get fixed in the following days / weeks.
 
 Also dont look into the window manager. Its an abomination. You have been warned.
 
-# 8. Open Source libraries used
+# 7. Open Source libraries used
 
 (TODO, I probably forgot something)
 * [keystone](https://github.com/keystone-engine/keystone)
@@ -178,6 +188,6 @@ Also dont look into the window manager. Its an abomination. You have been warned
 * [Monaspace Xenon](https://monaspace.githubnext.com/) (optional)
 * [Font Awesome](https://fontawesome.com) (optional)
 
-# 9. License and Contact
+# 8. License and Contact
 
 MIT License. Contact me for any questions at contact@breakingbread.at or open a discussion thread <3
